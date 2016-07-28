@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="gugu_text_color_focus">#FF0288CE</color>
+    <color name="gugu_text_color_normal">#FFBBBBBB</color>
+    <color name="gugu_line_color">#FF83CDE6</color>
+
+    <color name="gugu_picker_background">#808080</color>
+    <color name="gugu_header_background">#848484</color>
+
+    <color name="gugu_border_color">#F1F1F0</color>
+</resources>
