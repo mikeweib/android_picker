@@ -22,7 +22,9 @@ public class TestActivity extends Activity {
     public void onTest(View view) {
         String[] apps = {"测试", "一个", "两个", "三个"};
         SamplePicker p = new SamplePicker(this);
+        p.setTitleText(R.string.app_name);
         p.setItems(Arrays.asList(apps));
+        p.setSelectedIndex(1);
         p.setOnSelectedListener(i -> Log.d("TAG", "i = " + i));
         p.show();
     }

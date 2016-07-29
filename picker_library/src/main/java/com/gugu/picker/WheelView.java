@@ -1,11 +1,7 @@
 package com.gugu.picker;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntRange;
@@ -42,20 +38,17 @@ public class WheelView extends ScrollView {
 
     private Runnable mScrollerTask = new ScrollerTask();
     private int mItemHeight = 0;
-    private int mViewWidth;
     private int[] mSelectedAreaBorder; // 获取选中区域的边界
 
     private OnWheelViewListener mOnWheelViewListener;
 
-    private Paint mPaint;
     private int mTextSize;
     private int mTextColorNormal;
     private int mTextColorFocus;
-    private int mLineColor;
 
     private boolean mIsUserScroll = false; // 是否用户手动滚动
 
-    DisplayMetrics mDisplayMetrics;
+    private DisplayMetrics mDisplayMetrics;
 
     public WheelView(Context context) {
         super(context);
@@ -73,50 +66,6 @@ public class WheelView extends ScrollView {
     }
 
     @Override
-    public void setBackground(Drawable background) {
-        setBackgroundDrawable(background);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public void setBackgroundDrawable(Drawable background) {
-        if (mViewWidth == 0) {
-            mViewWidth = ((Activity) mContext).getWindowManager().getDefaultDisplay().getWidth();
-        }
-
-        if (null == mPaint) {
-            mPaint = new Paint();
-            mPaint.setColor(mLineColor);
-            mPaint.setStrokeWidth(mContext.getResources().getDimensionPixelSize(R.dimen.gugu_troke_width));
-        }
-
-        background = new Drawable() {
-            @Override
-            public void draw(Canvas canvas) {
-                int[] areaBorder = obtainSelectedAreaBorder();
-                canvas.drawLine(mViewWidth / 6, areaBorder[0], mViewWidth * 5 / 6, areaBorder[0], mPaint);
-                canvas.drawLine(mViewWidth / 6, areaBorder[1], mViewWidth * 5 / 6, areaBorder[1], mPaint);
-            }
-
-            @Override
-            public void setAlpha(int alpha) {
-
-            }
-
-            @Override
-            public void setColorFilter(ColorFilter cf) {
-
-            }
-
-            @Override
-            public int getOpacity() {
-                return 0;
-            }
-        };
-        super.setBackgroundDrawable(background);
-    }
-
-    @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
         refreshItemView(t);
@@ -125,8 +74,6 @@ public class WheelView extends ScrollView {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        mViewWidth = w;
-        setBackgroundDrawable(null);
     }
 
     @Override
@@ -164,7 +111,7 @@ public class WheelView extends ScrollView {
      *
      * @param list the list
      */
-    public void setItems(List<String> list) {
+    void setItems(List<String> list) {
         setItems(list, 0);
     }
 
@@ -174,12 +121,12 @@ public class WheelView extends ScrollView {
      * @param list  the list
      * @param index the index
      */
-    public void setItems(List<String> list, int index) {
+    void setItems(List<String> list, int index) {
         _setItems(list);
         _setSelectedIndex(index);
     }
 
-    public void setSelectedIndex(int index) {
+    void setSelectedIndex(int index) {
         _setSelectedIndex(index);
     }
 
@@ -198,18 +145,9 @@ public class WheelView extends ScrollView {
      * @param textColorNormal the text color normal
      * @param textColorFocus  the text color focus
      */
-    public void setTextColor(@ColorInt int textColorNormal, @ColorInt int textColorFocus) {
+    void setTextColor(@ColorInt int textColorNormal, @ColorInt int textColorFocus) {
         mTextColorNormal = textColorNormal;
         mTextColorFocus = textColorFocus;
-    }
-
-    /**
-     * Sets line color.
-     *
-     * @param lineColor the line color
-     */
-    public void setLineColor(@ColorInt int lineColor) {
-        mLineColor = lineColor;
     }
 
     /**
@@ -229,7 +167,7 @@ public class WheelView extends ScrollView {
      *
      * @return the selected index
      */
-    public int getSelectedIndex() {
+    int getSelectedIndex() {
         return mSelectedIndex - mOffset;
     }
 
@@ -252,7 +190,6 @@ public class WheelView extends ScrollView {
         mTextSize = mContext.getResources().getDimensionPixelSize(R.dimen.gugu_text_size);
         mTextColorNormal = mContext.getResources().getColor(R.color.gugu_text_color_normal);
         mTextColorFocus = mContext.getResources().getColor(R.color.gugu_text_color_focus);
-        mLineColor = mContext.getResources().getColor(R.color.gugu_line_color);
 
         // 2015/12/15 去掉ScrollView的阴影
         setFadingEdgeLength(0);
@@ -272,19 +209,15 @@ public class WheelView extends ScrollView {
     /**
      * 从0开始计数，所有项包括偏移量
      *
-     * @param index
+     * @param index 选中第几个
      */
     private void _setSelectedIndex(@IntRange(from = 0) final int index) {
         mIsUserScroll = false;
-        post(new Runnable() {
-            @Override
-            public void run() {
-                // 滚动到选中项的位置
-                smoothScrollTo(0, index * mItemHeight);
-                // 选中这一项的值
-                mSelectedIndex = index + mOffset;
-                onSelectedCallBack();
-            }
+        post(() -> {// 滚动到选中项的位置
+            smoothScrollTo(0, index * mItemHeight);
+            // 选中这一项的值
+            mSelectedIndex = index + mOffset;
+            onSelectedCallBack();
         });
     }
 
@@ -370,14 +303,14 @@ public class WheelView extends ScrollView {
         }
     }
 
-    private int[] obtainSelectedAreaBorder() {
-        if (null == mSelectedAreaBorder) {
-            mSelectedAreaBorder = new int[2];
-            mSelectedAreaBorder[0] = mItemHeight * mOffset;
-            mSelectedAreaBorder[1] = mItemHeight * (mOffset + 1);
-        }
-        return mSelectedAreaBorder;
-    }
+//    private int[] obtainSelectedAreaBorder() {
+//        if (null == mSelectedAreaBorder) {
+//            mSelectedAreaBorder = new int[2];
+//            mSelectedAreaBorder[0] = mItemHeight * mOffset;
+//            mSelectedAreaBorder[1] = mItemHeight * (mOffset + 1);
+//        }
+//        return mSelectedAreaBorder;
+//    }
 
     /**
      * 选中回调
@@ -429,22 +362,16 @@ public class WheelView extends ScrollView {
                     onSelectedCallBack();
                 } else {
                     if (remainder > mItemHeight / 2) {
-                        post(new Runnable() {
-                            @Override
-                            public void run() {
-                                smoothScrollTo(0, mInitialY - remainder + mItemHeight);
-                                mSelectedIndex = divided + mOffset + 1;
-                                onSelectedCallBack();
-                            }
+                        post(() -> {
+                            smoothScrollTo(0, mInitialY - remainder + mItemHeight);
+                            mSelectedIndex = divided + mOffset + 1;
+                            onSelectedCallBack();
                         });
                     } else {
-                        post(new Runnable() {
-                            @Override
-                            public void run() {
-                                smoothScrollTo(0, mInitialY - remainder);
-                                mSelectedIndex = divided + mOffset;
-                                onSelectedCallBack();
-                            }
+                        post(() -> {
+                            smoothScrollTo(0, mInitialY - remainder);
+                            mSelectedIndex = divided + mOffset;
+                            onSelectedCallBack();
                         });
                     }
                 }
@@ -452,7 +379,5 @@ public class WheelView extends ScrollView {
                 startScrollerTask();
             }
         }
-
     }
-
 }

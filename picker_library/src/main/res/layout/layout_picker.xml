@@ -13,10 +13,20 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dip"
-        android:background="@color/gugu_border_color"/>
+        android:background="@color/gugu_line_color"/>
 
     <com.gugu.picker.WheelView
         android:id="@+id/wheel_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="@color/gugu_line_color"/>
+
+    <include
+        layout="@layout/layout_footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

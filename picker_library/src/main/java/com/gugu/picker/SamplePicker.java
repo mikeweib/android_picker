@@ -5,12 +5,16 @@ import android.support.annotation.ColorInt;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import java.util.List;
 
 public class SamplePicker extends BasePicker {
 
     private WheelView mWheelView;
+    private TextView mTitleView;
+    private TextView mCancelView;
+    private TextView mConfirmView;
 
     private OnSelectedListener mOnSelectedListener;
 
@@ -23,8 +27,7 @@ public class SamplePicker extends BasePicker {
         super(activity);
 
         View view = LayoutInflater.from(activity).inflate(R.layout.layout_picker, null);
-
-        mWheelView = (WheelView) view.findViewById(R.id.wheel_view);
+        initViews(view);
 
         view.setLayoutParams( new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
         setContentView(view);
@@ -59,13 +62,8 @@ public class SamplePicker extends BasePicker {
         mWheelView.setTextColor(textColorNormal, textColorFocus);
     }
 
-    /**
-     * Sets line color.
-     *
-     * @param lineColor the line color
-     */
-    public void setLineColor(@ColorInt int lineColor) {
-        mWheelView.setLineColor(lineColor);
+    public void setTitleText(int res) {
+        mTitleView.setText(res);
     }
 
     private void onDismiss() {
@@ -77,5 +75,12 @@ public class SamplePicker extends BasePicker {
             mOnSelectedListener.onSelectIndex(mWheelView.getSelectedIndex());
         }
         dismiss();
+    }
+
+    private void initViews(View rootView) {
+        mWheelView = (WheelView) rootView.findViewById(R.id.wheel_view);
+        mTitleView = (TextView) rootView.findViewById(R.id.text_title);
+        mCancelView = (TextView) rootView.findViewById(R.id.btn_cancel);
+        mConfirmView = (TextView) rootView.findViewById(R.id.btn_confirm);
     }
 }
